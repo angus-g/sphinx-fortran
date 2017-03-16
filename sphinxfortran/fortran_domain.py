@@ -377,14 +377,14 @@ class FortranDocFieldTransformer(DocFieldTransformer):
 # REs for Fortran signatures
 f_sep = '/'
 f_sig_re = re.compile(
-    r'''^ (\w+(?:[^%%%(f_sep)s]%(f_sep)s\w+))? \s*          # type
-          (\b(?:subroutine|function))?  \s*             # objtype
-          (\b\w+%(f_sep)s)?              # module name
-          (\b\w+%%)?              # type name
-          (\b\w+)  \s*             # thing name
-          (?: \((.*)\))?           # optional: arguments
-           $                   # and nothing more
-          '''%dict(f_sep=f_sep), re.VERBOSE+re.I)
+    r'''^ (\w+(?:[^%%%(f_sep)s]%(f_sep)s\w+)?)?? \s* # [type]
+          (\b(?:subroutine|function))? \s*           # [objtype]
+          (\b\w+%(f_sep)s)?                          # [module name]
+          (\b\w+%%)?                                 # [type name]
+          (\b\w+) \s*                                # thing name
+          (?: \((.*)\))?                             # [arguments]
+           $
+    ''' % dict(f_sep=f_sep), re.VERBOSE + re.I)
 
 
 
