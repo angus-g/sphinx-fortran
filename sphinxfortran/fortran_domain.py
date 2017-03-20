@@ -196,7 +196,8 @@ class FortranCompleteField(FortranField, GroupedField):
             if fieldtype or fieldattrs:
                 par += nodes.emphasis(']',']')
             if content:
-                par += nodes.Text(' :: ')
+                if fieldarg:
+                    par += nodes.Text(' :: ')
                 par += content
             return par
 
@@ -319,7 +320,7 @@ class FortranDocFieldTransformer(DocFieldTransformer):
                 continue
 
             # also support syntax like ``:param type name [attrs]:``
-            if typedesc.is_typed==2:
+            if typedesc.is_typed==2 and len(fieldarg.strip()):
                 argname, argshape, argtype, argattrs = self.scan_fieldarg(fieldarg)
                 if argtype:
                     types.setdefault(typename, {})[argname] = \
@@ -489,7 +490,7 @@ class FortranObject(ObjectDescription):
                    prefix='% ',
                    strong=False,
                    can_collapse=False),
-        FortranCompleteField('return', label=l_('Return'),
+        FortranCompleteField('return', label=l_('Returns'),
                    names=('r', 'return', 'returns'),
                    typerolename='type',
                    typenames=('returntype', 'rtype'),
