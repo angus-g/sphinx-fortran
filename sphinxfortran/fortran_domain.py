@@ -51,11 +51,13 @@ from sphinx.roles import XRefRole
 from sphinx.locale import _
 from sphinx.domains import Domain, ObjType, Index
 from sphinx.directives import ObjectDescription
+from sphinx.util import logging
 from sphinx.util.nodes import make_refnode
 from sphinx.util.docfields import Field, GroupedField, TypedField, DocFieldTransformer, _is_single_paragraph
 
 import six
 
+logger = logging.getLogger(__name__)
 
 # FIXME: surlignage en jaune de la recherche inactive si "/" dans target
 
@@ -227,7 +229,8 @@ class FortranCompleteField(FortranField, GroupedField):
             if fieldtype or fieldattrs:
                 par += nodes.emphasis(']', ']')
             if content:
-                par += nodes.Text(' :: ')
+                if fieldarg:
+                    par += nodes.Text(' :: ')
                 par += content
             return par
 
@@ -352,7 +355,7 @@ class FortranDocFieldTransformer(DocFieldTransformer):
                 continue
 
             # also support syntax like ``:param type name [attrs]:``
-            if typedesc.is_typed == 2:
+            if typedesc.is_typed == 2 and len(fieldarg.strip()) > 0:
                 argname, argshape, argtype, argattrs = self.scan_fieldarg(
                     fieldarg)
                 if argtype:
@@ -525,7 +528,7 @@ class FortranObject(ObjectDescription):
                              prefix='% ',
                              strong=False,
                              can_collapse=False),
-        FortranCompleteField('return', label=_('Return'),
+        FortranCompleteField('return', label=_('Returns'),
                              names=('r', 'return', 'returns'),
                              typerolename='type',
                              typenames=('returntype', 'rtype'),
@@ -1265,7 +1268,7 @@ class FortranDomain(Domain):
         if not matches:
             return None
         elif len(matches) > 1:
-            env.warn(fromdocname,
+            logger.warning(fromdocname,
                      'more than one target found for cross-reference '
                      '%r: %s' % (target,
                                  ', '.join(match[0] for match in matches)),
