@@ -670,7 +670,7 @@ class FortranObject(ObjectDescription):
         indextext = self.get_index_text(modname, fullname)
         if indextext:
             self.indexnode['entries'].append(('single', indextext,
-                                              fullname, fullname))
+                                              fullname, '', None))
 
     def before_content(self):
         # needed for automatic qualification of fields (reset in subclasses)
@@ -943,8 +943,7 @@ class FortranModule(Directive):
             indextext = _('%s (module)') % modname
             #inode = addnodes.index(entries=[('single', indextext,
                                              #'module-' + modname, modname)])
-            inode = addnodes.index(entries=[('single', indextext,
-                                             'f' + f_sep + modname, modname)])
+            inode = addnodes.index(entries=[('single', indextext, modname, '', None)])
             ret.append(inode)
         return ret
 
