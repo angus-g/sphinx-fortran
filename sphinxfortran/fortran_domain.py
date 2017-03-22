@@ -781,60 +781,6 @@ class FortranType(FortranSpecial, WithFortranDocFieldTransformer, FortranObject)
             self.typename_set = True
 
 class FortranTypeField(FortranObject):
-    #def handle_signature(self, sig, signode):
-        #"""
-        #Transform a Fortran signature into RST nodes.
-        #Returns (fully qualified name of the thing, classname if any).
-
-        #If inside a class, the current class name is handled intelligently:
-        #* it is stripped from the displayed name if present
-        #* it is added to the full name (return value) if not present
-        #"""
-        #m = f_sig_re.match(sig)
-        #if m is None:
-            #raise ValueError
-        #ftype, objtype, modname, typename, name, arglist = m.groups()
-        #print 'handle_signature', ftype, objtype, modname, typename, name, arglist
-        #if not typename: typename = ""
-
-        ## determine module and type
-        #modname = (modname and modname[:-1]) or self.options.get(
-            #'module', self.env.temp_data.get('f:module'))
-        #typename = (typename and typename[:-1]) or self.options.get(
-            #'type', self.env.temp_data.get('f:type'))
-        ##print ' mod type', modname, typename
-        ##print self.objtype
-        #if self.objtype=='typefield' and not typename:
-            #raise ValueError
-
-        #if typename: name = typename+'%'+name
-
-        #fullname = name
-        #if modname:
-            #fullname = modname + f_sep + name
-
-        #signode['module'] = modname
-        #signode['type'] = typename
-        #signode['fullname'] = fullname
-
-        ## Fill node
-        #signode += addnodes.desc_name(name, name)
-        #shape = self.options.get('shape')
-        #if shape: signode += nodes.Text(shape, shape)
-        #ftype = self.options.get('type', ftype)
-        #attr= self.options.get('attr')
-        #if ftype or attr:
-            #signode += nodes.Text(' :: ', ' :: ')
-            #if ftype: signode += nodes.emphasis('', ftype)
-            #if attr: signode += nodes.literal('', '['+attr+']')
-        #if self.content:
-            #signode += nodes.Text(': ', ': ')
-            #argnodes, msgs = self.state.inline_text(' '.join(self.content), self.lineno)
-            #signode += argnodes
-            #signode += msgs
-
-        #return fullname, ftype
-
     def before_content(self):
         FortranObject.before_content(self)
         lastname = self.names and self.names[-1][1]
@@ -1069,31 +1015,31 @@ class FortranDomain(Domain):
     name = 'f'
     label = 'Fortran'
     object_types = {
-        'program':      ObjType(l_('program'), 'prog'),
-        'type':         ObjType(l_('type'), 'type'),
-        'variable':     ObjType(l_('variable'), 'var'),
-        'function':     ObjType(l_('function'), 'func'),
-        'subroutine':   ObjType(l_('subroutine'), 'func', 'subr'),
-        'module':       ObjType(l_('module'), 'mod'),
+        'program':    ObjType(l_('program'),    'prog'),
+        'type':       ObjType(l_('type'),       'type'),
+        'variable':   ObjType(l_('variable'),   'var'),
+        'function':   ObjType(l_('function'),   'func'),
+        'subroutine': ObjType(l_('subroutine'), 'func', 'subr'),
+        'module':     ObjType(l_('module'),     'mod'),
     }
 
     directives = {
-        'program': FortranProgram,
-        'type':           FortranType,
-        'variable':          FortranObject,
-        'function':        FortranWithSig,
-        'subroutine':          FortranWithSig,
-        'module':          FortranModule,
-        'currentmodule':   FortranCurrentModule,
+        'program':       FortranProgram,
+        'type':          FortranType,
+        'variable':      FortranObject,
+        'function':      FortranWithSig,
+        'subroutine':    FortranWithSig,
+        'module':        FortranModule,
+        'currentmodule': FortranCurrentModule,
     }
 
     roles = {
         'prog': FortranXRefRole(),
         'type': FortranXRefRole(),
-        'var':FortranXRefRole(),
-        'func':  FortranXRefRole(fix_parens=True),
-        'subr':  FortranXRefRole(fix_parens=True),
-        'mod':   FortranXRefRole(),
+        'var':  FortranXRefRole(),
+        'func': FortranXRefRole(fix_parens=True),
+        'subr': FortranXRefRole(fix_parens=True),
+        'mod':  FortranXRefRole(),
     }
     initial_data = {
         'objects': {},  # fullname -> docname, objtype
